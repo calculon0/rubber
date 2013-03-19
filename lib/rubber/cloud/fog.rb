@@ -11,9 +11,10 @@ module Rubber
       def initialize(env, capistrano)
         super(env, capistrano)
         credentials = Rubber::Util.symbolize_keys(env.credentials)
-        @compute_provider = ::Fog::Compute.new(credentials)
         @storage_provider = ::Fog::Storage.new(credentials)
-      end
+        credentials[:version] = :v2
+        @compute_provider = ::Fog::Compute.new(credentials)
+        end
       
       def storage(bucket)
         return Rubber::Cloud::FogStorage.new(@storage_provider, bucket)

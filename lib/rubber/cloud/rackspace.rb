@@ -19,7 +19,6 @@ module Rubber
                                                     :image_id => ami,
                                                     :flavor_id => ami_type,
                                                     :groups => security_groups,
-                                                    #:availability_zone => availability_zone,
                                                     :public_key_path => env.key_file.to_s + ".pub",
                                                     :private_key_path => env.key_file)
         instance_id = response.id
