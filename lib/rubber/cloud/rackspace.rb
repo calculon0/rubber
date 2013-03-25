@@ -59,6 +59,10 @@ module Rubber
         return instances
       end
 
+      def create_security_group(group_name, group_description)
+
+      end
+
       def describe_security_groups(group_name=nil)
         []
       end

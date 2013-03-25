@@ -351,7 +351,8 @@ namespace :rubber do
 
     instance = cloud.describe_instances(instance_item.instance_id).first rescue {}
 
-    if instance[:state] == "running"
+    #if instance[:state] == "running"
+    if instance[:state] == "ACTIVE"
       print "\n"
       logger.info "Instance running, fetching hostname/ip data"
       instance_item.external_host = instance[:external_host]
