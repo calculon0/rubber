@@ -27,10 +27,14 @@ module Rubber
 
       def describe_instances(instance_id=nil)
         instances = []
-        #opts = {}
-        #opts["instance-id"] = instance_id if instance_id
-        #response = @compute_provider.servers.all(opts)
-        response = @compute_provider.servers.all
+        if instance_id
+          response = []
+          response << @compute_provider.servers.get(instance_id)
+        else
+          response = @compute_provider.servers.all
+        end
+        #{response = @compute_provider.servers.all(opts)}
+
         response.each do |item|
           instance = {}
           instance[:id] = item.id
