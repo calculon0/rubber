@@ -154,24 +154,24 @@ namespace :rubber do
     return local_alias
   end
 
-  def prepare_script(name, contents, stop_on_error_cmd=rubber_env.stop_on_error_cmd)
+  def prepare_script(name, contents, stop_on_error_cmd=rubber_env.stop_on_error_cmd, opts = {})
     script = "/tmp/#{name}"
     # this lets us abort a script if a command in the middle of it errors out
     contents = "#{stop_on_error_cmd}\n#{contents}" if stop_on_error_cmd
-    put(contents, script)
+    put(contents, script, opts)
     return script
   end
 
   def run_script(name, contents, opts = {})
     args = opts.delete(:script_args)
-    script = prepare_script(name, contents)
+    script = prepare_script(name, contents, rubber_env.stop_on_error_cmd, opts)
     run "bash #{script} #{args}", opts
   end
 
   def sudo_script(name, contents, opts = {})
     user = opts.delete(:as)
     args = opts.delete(:script_args)
-    script = prepare_script(name, contents)
+    script = prepare_script(name, contents, rubber_env.stop_on_error_cmd, opts)
 
     sudo_args = user ? "-H -u #{user}" : ""
     run "#{sudo} #{sudo_args} bash -l #{script} #{args}", opts
@@ -191,7 +191,9 @@ namespace :rubber do
     value = Capistrano::CLI.ui.ask(msg) unless value
     value = value.size == 0 ? default : value
     fatal "#{name} is required, pass using environment or enter at prompt" if required && ! value
-    return value
+
+    # Explicitly convert to a String to avoid weird serialization issues with Psych.
+    value.to_s
   end
 
   def fatal(msg, code=1)
